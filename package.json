@@ -1,0 +1,17 @@
+{
+  "name": "exclusive-restaurant-portal",
+  "version": "1.0.0",
+  "description": "招待制会員限定レストラン共有ポータル",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "better-sqlite3": "^11.7.0",
+    "express": "^4.21.0",
+    "express-session": "^1.18.1",
+    "uuid": "^10.0.0"
+  }
+}

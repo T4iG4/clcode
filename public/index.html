@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GASTRONOME CLUB - 会員制レストランポータル</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div id="app">
+    <!-- Auth Screen -->
+    <div id="auth-screen" class="screen active">
+      <div class="auth-container">
+        <div class="auth-brand">
+          <div class="brand-icon">G</div>
+          <h1>GASTRONOME CLUB</h1>
+          <p class="brand-tagline">招待された会員だけが知る、本当に美味しいお店</p>
+        </div>
+
+        <div class="auth-tabs">
+          <button class="auth-tab active" data-tab="login">ログイン</button>
+          <button class="auth-tab" data-tab="register">新規登録</button>
+        </div>
+
+        <form id="login-form" class="auth-form active">
+          <div class="form-group">
+            <label>ユーザー名</label>
+            <input type="text" id="login-username" required autocomplete="username">
+          </div>
+          <div class="form-group">
+            <label>パスワード</label>
+            <input type="password" id="login-password" required autocomplete="current-password">
+          </div>
+          <button type="submit" class="btn btn-primary btn-full">ログイン</button>
+          <div id="login-error" class="form-error"></div>
+        </form>
+
+        <form id="register-form" class="auth-form">
+          <div class="form-group">
+            <label>招待コード</label>
+            <input type="text" id="register-invite" required placeholder="8桁の招待コードを入力" autocomplete="off">
+          </div>
+          <div class="form-group">
+            <label>ユーザー名</label>
+            <input type="text" id="register-username" required autocomplete="username">
+          </div>
+          <div class="form-group">
+            <label>表示名</label>
+            <input type="text" id="register-displayname" required placeholder="他の会員に表示される名前">
+          </div>
+          <div class="form-group">
+            <label>パスワード</label>
+            <input type="password" id="register-password" required minlength="6" autocomplete="new-password">
+          </div>
+          <button type="submit" class="btn btn-primary btn-full">会員登録</button>
+          <div id="register-error" class="form-error"></div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Main App -->
+    <div id="main-screen" class="screen">
+      <header class="header">
+        <div class="header-inner">
+          <div class="header-left">
+            <div class="header-brand">G</div>
+            <h1 class="header-title">GASTRONOME CLUB</h1>
+          </div>
+          <nav class="header-nav">
+            <button class="nav-btn active" data-page="restaurants">
+              <span class="nav-icon">&#9734;</span> お店一覧
+            </button>
+            <button class="nav-btn" data-page="favorites">
+              <span class="nav-icon">&#9829;</span> お気に入り
+            </button>
+            <button class="nav-btn" data-page="invite">
+              <span class="nav-icon">&#9993;</span> 招待
+            </button>
+            <button class="nav-btn" id="admin-nav-btn" data-page="admin" style="display:none;">
+              <span class="nav-icon">&#9881;</span> 管理
+            </button>
+          </nav>
+          <div class="header-right">
+            <span id="user-display-name" class="user-name"></span>
+            <button id="logout-btn" class="btn btn-ghost btn-sm">ログアウト</button>
+          </div>
+        </div>
+      </header>
+
+      <main class="main-content">
+        <!-- Restaurant List Page -->
+        <div id="page-restaurants" class="page active">
+          <div class="page-header">
+            <h2>お店一覧</h2>
+            <button id="add-restaurant-btn" class="btn btn-primary">+ お店を追加</button>
+          </div>
+          <div class="filters">
+            <div class="search-box">
+              <input type="text" id="search-input" placeholder="お店を検索...">
+            </div>
+            <select id="filter-category" class="filter-select">
+              <option value="">すべてのジャンル</option>
+            </select>
+            <select id="filter-area" class="filter-select">
+              <option value="">すべてのエリア</option>
+            </select>
+            <select id="sort-select" class="filter-select">
+              <option value="newest">新着順</option>
+              <option value="rating">評価順</option>
+              <option value="name">名前順</option>
+            </select>
+          </div>
+          <div id="restaurant-list" class="restaurant-grid"></div>
+        </div>
+
+        <!-- Favorites Page -->
+        <div id="page-favorites" class="page">
+          <div class="page-header">
+            <h2>お気に入り</h2>
+          </div>
+          <div id="favorites-list" class="restaurant-grid"></div>
+          <div id="no-favorites" class="empty-state" style="display:none;">
+            <p>お気に入りのお店はまだありません</p>
+            <p class="text-muted">お店の詳細ページからお気に入りに追加できます</p>
+          </div>
+        </div>
+
+        <!-- Invite Page -->
+        <div id="page-invite" class="page">
+          <div class="page-header">
+            <h2>友人を招待する</h2>
+          </div>
+          <div class="invite-section">
+            <p class="invite-desc">信頼できるグルメ仲間を招待しましょう。招待コードの有効期限は7日間です。</p>
+            <button id="create-invite-btn" class="btn btn-primary">招待コードを発行する</button>
+            <div id="invite-list" class="invite-list"></div>
+          </div>
+        </div>
+
+        <!-- Admin Page -->
+        <div id="page-admin" class="page">
+          <div class="page-header">
+            <h2>管理パネル</h2>
+          </div>
+          <div class="admin-section">
+            <h3>会員一覧</h3>
+            <div id="admin-users" class="admin-table-wrap"></div>
+          </div>
+          <div class="admin-section">
+            <h3>招待コード一覧</h3>
+            <div id="admin-invitations" class="admin-table-wrap"></div>
+          </div>
+        </div>
+
+        <!-- Restaurant Detail Page -->
+        <div id="page-detail" class="page">
+          <div id="restaurant-detail"></div>
+        </div>
+
+        <!-- Add/Edit Restaurant Page -->
+        <div id="page-restaurant-form" class="page">
+          <div class="page-header">
+            <button id="form-back-btn" class="btn btn-ghost">&larr; 戻る</button>
+            <h2 id="form-title">お店を追加</h2>
+          </div>
+          <form id="restaurant-form" class="restaurant-form-container">
+            <input type="hidden" id="form-restaurant-id">
+            <div class="form-row">
+              <div class="form-group">
+                <label>店名 <span class="required">*</span></label>
+                <input type="text" id="form-name" required>
+              </div>
+              <div class="form-group">
+                <label>ジャンル <span class="required">*</span></label>
+                <input type="text" id="form-category" required placeholder="例: 寿司、フレンチ、焼鳥">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>エリア <span class="required">*</span></label>
+                <input type="text" id="form-area" required placeholder="例: 東京・銀座">
+              </div>
+              <div class="form-group">
+                <label>予算</label>
+                <input type="text" id="form-budget" placeholder="例: ¥10,000〜¥15,000">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>住所</label>
+                <input type="text" id="form-address">
+              </div>
+              <div class="form-group">
+                <label>電話番号</label>
+                <input type="text" id="form-phone">
+              </div>
+            </div>
+            <div class="form-group">
+              <label>画像URL</label>
+              <input type="url" id="form-image-url" placeholder="https://...">
+            </div>
+            <div class="form-group">
+              <label>お店の紹介</label>
+              <textarea id="form-description" rows="4" placeholder="お店の雰囲気や料理の特徴など"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary btn-full">保存する</button>
+          </form>
+        </div>
+      </main>
+    </div>
+
+    <!-- Review Modal -->
+    <div id="review-modal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>レビューを書く</h3>
+          <button class="modal-close">&times;</button>
+        </div>
+        <form id="review-form">
+          <input type="hidden" id="review-restaurant-id">
+          <div class="form-group">
+            <label>評価 <span class="required">*</span></label>
+            <div class="star-rating" id="star-rating">
+              <span class="star" data-value="1">&#9733;</span>
+              <span class="star" data-value="2">&#9733;</span>
+              <span class="star" data-value="3">&#9733;</span>
+              <span class="star" data-value="4">&#9733;</span>
+              <span class="star" data-value="5">&#9733;</span>
+            </div>
+            <input type="hidden" id="review-rating" required>
+          </div>
+          <div class="form-group">
+            <label>タイトル <span class="required">*</span></label>
+            <input type="text" id="review-title" required>
+          </div>
+          <div class="form-group">
+            <label>コメント <span class="required">*</span></label>
+            <textarea id="review-comment" rows="4" required></textarea>
+          </div>
+          <div class="form-group">
+            <label>訪問日</label>
+            <input type="date" id="review-visit-date">
+          </div>
+          <button type="submit" class="btn btn-primary btn-full">投稿する</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="/app.js"></script>
+</body>
+</html>
