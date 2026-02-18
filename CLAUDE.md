@@ -1,55 +1,18 @@
-# clcode
+# CLAUDE.md
 
-This file provides guidance to Claude Code when working in this repository.
+## コードスタイル
+- ES modules (import/export) を使う。CommonJS (require) は使わない
+- 可能な限り import を分割する (e.g. import { foo } from 'bar')
 
-## Project Overview
+## ワークフロー
+- コード変更が終わったら必ず型チェックを実行
+- テストスイート全体ではなく、単一テストの実行を優先（パフォーマンスのため）
 
-This is a fresh repository. Update this section with a description of the project as it develops.
+## 禁止事項
+- モック・ダミー実装は禁止。必要なら許可を得ること
+- 指示にない機能追加は禁止
+- console.log を本番コードに残さない
 
-## Repository Structure
-
-```
-.
-├── .claude/
-│   ├── hooks/
-│   │   └── session-start.sh   # SessionStart hook for Claude Code web sessions
-│   └── settings.json          # Claude Code settings and hook registration
-├── CLAUDE.md                  # This file
-└── README.md
-```
-
-## Development Setup
-
-No dependencies are required at this time. Update this section as the project grows.
-
-## Common Commands
-
-Update this section with the commands used in this project as it develops.
-
-### Build
-
-```bash
-# Add build command here
-```
-
-### Test
-
-```bash
-# Add test command here
-```
-
-### Lint
-
-```bash
-# Add lint command here
-```
-
-## Code Style and Conventions
-
-Document code style preferences and conventions here as the project develops.
-
-## Key Notes for Claude
-
-- This is a new project — establish patterns thoughtfully as code is added
-- Keep solutions simple and avoid over-engineering
-- Update this CLAUDE.md as the project evolves with new tooling, conventions, or context
+## 注意点
+- src/legacy/ 配下は触らない（リファクタリング対象外）
+- 環境変数 DATABASE_URL が必要
